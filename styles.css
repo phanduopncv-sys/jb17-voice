@@ -1,184 +1,174 @@
-/* ===========================
-   GLOBAL
-=========================== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* Global */
 body {
-    background: #111;
+    margin: 0;
+    background: #121212;
     color: #fff;
-    font-family: Arial, sans-serif;
+    font-family: 'Inter', sans-serif;
 }
 
-/* ===========================
-   HEADER
-=========================== */
-header {
-    background: #000;
-    padding: 15px 35px;
+.app {
     display: flex;
-    justify-content: space-between;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: #1B1B1B;
+    padding: 25px;
+    border-right: 1px solid #2a2a2a;
+}
+
+.logo {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.nav-item {
+    display: flex;
     align-items: center;
-    border-bottom: 1px solid #222;
-    font-size: 18px;
+    padding: 12px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: 0.2s;
 }
 
-header nav a {
-    margin-left: 15px;
-    color: #ccc;
-    text-decoration: none;
-    font-size: 15px;
+.nav-item .icon {
+    font-size: 20px;
+    margin-right: 12px;
 }
 
-header nav a:hover {
-    color: #fff;
+.nav-item:hover {
+    background: #2c2c2c; /* H1 Hover */
 }
 
-/* ===========================
-   LAYOUT
-=========================== */
-.container {
-    display: flex;
-    gap: 30px;
+.nav-item.active {
+    background: #333;
+}
+
+/* Credits */
+.credits-box {
+    margin-top: 30px;
+    padding: 12px;
+    background: #222;
+    border-radius: 8px;
+}
+.label {
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* Main */
+.main {
+    flex: 1;
     padding: 30px;
-}
-
-/* ===========================
-   PANEL CARDS
-=========================== */
-.card {
-    background: #1a1a1a;
-    padding: 20px;
-    border-radius: 12px;
-    border: 1px solid #222;
-}
-
-/* Sidebar (Voice Settings) */
-#voiceCard {
-    width: 30%;
-    max-height: 90vh;
     overflow-y: auto;
 }
 
-/* Studio */
-#studioCard {
-    width: 70%;
+.tab {
+    display: none;
 }
-
-/* ===========================
-   INPUT ELEMENTS
-=========================== */
-label {
+.tab.active {
     display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: #ccc;
 }
 
-select,
-input,
-textarea {
+/* Max Layout */
+.max-container {
+    display: flex;
+    gap: 25px;
+}
+
+/* Text box */
+.text-box {
+    width: 60%;
+}
+.text-box textarea {
+    width: 100%;
+    min-height: 300px;
+    background: #0f0f0f;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 15px;
+}
+
+/* Control box */
+.control-box {
+    width: 40%;
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #2c2c2c;
+}
+.control-box label {
+    font-size: 14px;
+    margin-top: 15px;
+}
+.control-box input, .control-box select {
     width: 100%;
     padding: 10px;
-    margin-top: 6px;
-    background: #000;
+    background: #0E0E0E;
     border: 1px solid #333;
     border-radius: 8px;
     color: #fff;
-    font-size: 14px;
 }
 
-textarea {
-    resize: vertical;
-}
-
-/* ===========================
-   RANGE SLIDERS
-=========================== */
-input[type="range"] {
+/* Range Slider Neon style */
+input[type=range] {
     width: 100%;
-    height: 6px;
+    height: 4px;
     background: #333;
-    outline: none;
-    border-radius: 5px;
+    border-radius: 4px;
     -webkit-appearance: none;
 }
-
-input[type="range"]::-webkit-slider-thumb {
-    width: 16px;
-    height: 16px;
-    background: #0af;
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #00E5FF;
     border-radius: 50%;
-    cursor: pointer;
-    -webkit-appearance: none;
+    box-shadow: 0 0 12px #00E5FF;
 }
 
-/* ===========================
-   BUTTONS
-=========================== */
-button {
+/* Buttons */
+.btn {
+    margin-top: 16px;
+    padding: 12px 15px;
+    width: 100%;
     border: none;
-    padding: 10px 15px;
-    border-radius: 8px;
-    background: #3498db;
-    color: #fff;
-    font-size: 14px;
+    border-radius: 10px;
     cursor: pointer;
-    margin-top: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: 0.2s;
 }
 
-button:hover {
-    background: #2980b9;
+.btn.preview {
+    background: #444;
+}
+.btn.preview:hover {
+    background: #555;
 }
 
-#clearHistoryBtn {
-    background: #c0392b !important;
+.btn.generate {
+    background: #00A2FF;
+    box-shadow: 0 0 10px #00A2FF;
+}
+.btn.generate:hover {
+    background: #0090EB;
 }
 
-/* ===========================
-   STATUS BOX
-=========================== */
-#apiStatusBox {
-    margin-bottom: 15px;
-    font-size: 14px;
-    padding: 8px 0;
+.btn.danger {
+    background: #D93636;
+}
+.btn.danger:hover {
+    background: #B52E2E;
 }
 
-/* ===========================
-   QUEUE ITEMS
-=========================== */
-.queue-item {
-    padding: 12px;
-    margin-top: 10px;
-    background: #000;
-    border-radius: 8px;
-    border: 1px solid #222;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* Queue */
+#queueContainer audio {
+    margin-top: 15px;
 }
-
-.queue-item button {
-    background: #16a085;
-}
-
-.queue-item button:hover {
-    background: #13866f;
-}
-
-/* ===========================
-   HISTORY SECTION
-=========================== */
-#historySection {
-    margin: 30px;
-    padding: 20px;
-    background: #1a1a1a;
-    border-radius: 12px;
-    border: 1px solid #222;
-}
-
