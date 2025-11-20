@@ -1,276 +1,184 @@
-/* =========================================================
-   BASE
-========================================================= */
+/* ===========================
+   GLOBAL
+=========================== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Inter", sans-serif;
 }
 
 body {
-    background: #0e0e0e;
-    color: #f2f2f2;
-    padding-bottom: 100px;
+    background: #111;
+    color: #fff;
+    font-family: Arial, sans-serif;
 }
 
-/* =========================================================
-   NAVBAR
-========================================================= */
-#navbar {
-    width: 100%;
-    height: 58px;
-    background: #151515;
-    border-bottom: 1px solid #222;
+/* ===========================
+   HEADER
+=========================== */
+header {
+    background: #000;
+    padding: 15px 35px;
     display: flex;
-    align-items: center;
-    padding: 0 25px;
     justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 99;
-}
-
-#navbar .logo {
+    align-items: center;
+    border-bottom: 1px solid #222;
     font-size: 18px;
-    font-weight: 700;
-    color: #71a7ff;
 }
 
-#navbar .nav-links a {
-    margin-left: 20px;
+header nav a {
+    margin-left: 15px;
+    color: #ccc;
     text-decoration: none;
     font-size: 15px;
-    color: #aaa;
-    transition: 0.2s;
 }
 
-#navbar .nav-links a:hover,
-#navbar .nav-links a.active {
+header nav a:hover {
     color: #fff;
 }
 
-/* =========================================================
-   PAGE WRAPPER
-========================================================= */
-.page {
-    display: none;
-    padding: 30px 40px;
-}
-
-.page.active {
-    display: block;
-}
-
-/* =========================================================
-   STUDIO PANELS
-========================================================= */
-#studioPage {
+/* ===========================
+   LAYOUT
+=========================== */
+.container {
     display: flex;
-    gap: 28px;
+    gap: 30px;
+    padding: 30px;
 }
 
-/* LEFT PANEL */
-.leftPanel {
-    width: 32%;
-    background: #151515;
-    border: 1px solid #222;
-    padding: 25px;
+/* ===========================
+   PANEL CARDS
+=========================== */
+.card {
+    background: #1a1a1a;
+    padding: 20px;
     border-radius: 12px;
-}
-
-/* RIGHT PANEL */
-.rightPanel {
-    width: 68%;
-    background: #151515;
     border: 1px solid #222;
-    padding: 25px;
-    border-radius: 12px;
 }
 
-h2 {
-    margin-bottom: 15px;
-    font-size: 20px;
+/* Sidebar (Voice Settings) */
+#voiceCard {
+    width: 30%;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
-/* =========================================================
+/* Studio */
+#studioCard {
+    width: 70%;
+}
+
+/* ===========================
    INPUT ELEMENTS
-========================================================= */
+=========================== */
 label {
     display: block;
-    margin-top: 14px;
+    margin-top: 15px;
     margin-bottom: 5px;
     font-size: 14px;
     color: #ccc;
 }
 
 select,
-input[type=text],
+input,
 textarea {
     width: 100%;
-    background: #111;
+    padding: 10px;
+    margin-top: 6px;
+    background: #000;
     border: 1px solid #333;
     border-radius: 8px;
-    padding: 10px;
+    color: #fff;
     font-size: 14px;
-    color: #eee;
-    outline: none;
 }
 
 textarea {
     resize: vertical;
 }
 
-.charCount {
-    margin-top: -5px;
-    margin-bottom: 10px;
-    font-size: 12px;
-    opacity: 0.6;
-}
-
-/* =========================================================
-   SLIDERS
-========================================================= */
-.sliderBox {
-    margin-top: 18px;
-}
-
-.sliderBox label {
-    display: flex;
-    justify-content: space-between;
-}
-
-input[type=range] {
+/* ===========================
+   RANGE SLIDERS
+=========================== */
+input[type="range"] {
     width: 100%;
-    appearance: none;
-    height: 5px;
+    height: 6px;
     background: #333;
+    outline: none;
     border-radius: 5px;
+    -webkit-appearance: none;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
     width: 16px;
     height: 16px;
-    background: #58a6ff;
+    background: #0af;
     border-radius: 50%;
-    appearance: none;
-}
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-button {
     cursor: pointer;
+    -webkit-appearance: none;
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+button {
     border: none;
-    padding: 8px 14px;
+    padding: 10px 15px;
     border-radius: 8px;
+    background: #3498db;
+    color: #fff;
     font-size: 14px;
-    margin-right: 8px;
-    transition: 0.2s;
-}
-
-.blueBtn {
-    background: #388bfd;
-    color: #fff;
-}
-
-.greenBtn {
-    background: #2ea043;
-    color: #fff;
-}
-
-.redBtn {
-    background: #d43c3c;
-    color: #fff;
-}
-
-button:hover {
-    opacity: 0.85;
-}
-
-.topLine {
-    margin-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #8fa8ff;
-}
-
-/* =========================================================
-   QUEUE BOX
-========================================================= */
-#queueContainer {
+    cursor: pointer;
     margin-top: 10px;
 }
 
-.queueItem {
-    background: #121212;
-    border: 1px solid #292929;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 16px;
+button:hover {
+    background: #2980b9;
 }
 
-.queueItem progress {
-    width: 100%;
-    height: 8px;
-    margin: 10px 0;
-    appearance: none;
+#clearHistoryBtn {
+    background: #c0392b !important;
 }
 
-.queueItem progress::-webkit-progress-bar {
-    background: #222;
-    border-radius: 4px;
+/* ===========================
+   STATUS BOX
+=========================== */
+#apiStatusBox {
+    margin-bottom: 15px;
+    font-size: 14px;
+    padding: 8px 0;
 }
 
-.queueItem progress::-webkit-progress-value {
-    background: #58a6ff;
-    border-radius: 4px;
+/* ===========================
+   QUEUE ITEMS
+=========================== */
+.queue-item {
+    padding: 12px;
+    margin-top: 10px;
+    background: #000;
+    border-radius: 8px;
+    border: 1px solid #222;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* =========================================================
-   HISTORY PAGE
-========================================================= */
-#historyContainer {
-    margin-top: 20px;
+.queue-item button {
+    background: #16a085;
 }
 
-.historyItem {
-    background: #121212;
-    border: 1px solid #292929;
-    padding: 18px;
-    border-radius: 10px;
-    margin-bottom: 16px;
+.queue-item button:hover {
+    background: #13866f;
 }
 
-.historyItem audio {
-    width: 100%;
-    margin: 10px 0;
+/* ===========================
+   HISTORY SECTION
+=========================== */
+#historySection {
+    margin: 30px;
+    padding: 20px;
+    background: #1a1a1a;
+    border-radius: 12px;
+    border: 1px solid #222;
 }
 
-/* =========================================================
-   SETTINGS PAGE
-========================================================= */
-#settingsPage textarea {
-    width: 100%;
-    height: 150px;
-    background: #111;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 10px;
-    color: #fff;
-}
-
-/* =========================================================
-   SCROLLBAR
-========================================================= */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 4px;
-}
-::-webkit-scrollbar-track {
-    background: #111;
-}
