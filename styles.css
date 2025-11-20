@@ -1,6 +1,6 @@
-/* ================================
-   RESET
-================================ */
+/* =========================================================
+   BASE
+========================================================= */
 * {
     margin: 0;
     padding: 0;
@@ -9,95 +9,52 @@
 }
 
 body {
-    background: #111;
-    color: #eee;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
+    background: #0e0e0e;
+    color: #f2f2f2;
+    padding-bottom: 100px;
 }
 
-/* ================================
-   SIDEBAR (LEFT)
-================================ */
-#sidebar {
-    width: 260px;
-    background: #141414;
-    border-right: 1px solid #222;
-    padding: 25px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.side-title {
-    font-weight: 600;
-    font-size: 14px;
-    margin-bottom: 8px;
-    opacity: 0.7;
-}
-
-.side-item {
-    display: block;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-bottom: 4px;
-    cursor: pointer;
-    transition: 0.2s;
-    color: #ddd;
-}
-
-.side-item:hover,
-.side-item.active {
-    background: #1f1f1f;
-}
-
-/* ================================
-   MAIN CONTENT WRAPPER
-================================ */
-#mainWrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-/* ================================
-   TOP NAV BAR
-================================ */
+/* =========================================================
+   NAVBAR
+========================================================= */
 #navbar {
-    height: 60px;
-    background: #141414;
+    width: 100%;
+    height: 58px;
+    background: #151515;
     border-bottom: 1px solid #222;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     padding: 0 25px;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 99;
 }
 
-.nav-links a {
+#navbar .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #71a7ff;
+}
+
+#navbar .nav-links a {
     margin-left: 20px;
     text-decoration: none;
+    font-size: 15px;
     color: #aaa;
-    font-weight: 500;
+    transition: 0.2s;
 }
 
-.nav-links a.active {
+#navbar .nav-links a:hover,
+#navbar .nav-links a.active {
     color: #fff;
 }
 
-/* ================================
-   PAGE LAYOUT (GenAIPro style)
-================================ */
+/* =========================================================
+   PAGE WRAPPER
+========================================================= */
 .page {
     display: none;
-    height: calc(100vh - 60px);
-    overflow-y: auto;
     padding: 30px 40px;
 }
 
@@ -105,147 +62,213 @@ body {
     display: block;
 }
 
+/* =========================================================
+   STUDIO PANELS
+========================================================= */
 #studioPage {
     display: flex;
-    gap: 40px;
+    gap: 28px;
 }
 
-/* Left panel (Voice settings) */
+/* LEFT PANEL */
 .leftPanel {
-    width: 320px;
-    background: #141414;
-    padding: 20px;
+    width: 32%;
+    background: #151515;
     border: 1px solid #222;
+    padding: 25px;
     border-radius: 12px;
-    height: fit-content;
 }
 
-.leftPanel h2 {
-    margin-bottom: 20px;
+/* RIGHT PANEL */
+.rightPanel {
+    width: 68%;
+    background: #151515;
+    border: 1px solid #222;
+    padding: 25px;
+    border-radius: 12px;
 }
 
+h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+/* =========================================================
+   INPUT ELEMENTS
+========================================================= */
 label {
-    font-size: 14px;
     display: block;
-    margin-top: 15px;
+    margin-top: 14px;
     margin-bottom: 5px;
+    font-size: 14px;
+    color: #ccc;
 }
 
 select,
 input[type=text],
 textarea {
     width: 100%;
-    padding: 10px;
-    border-radius: 8px;
+    background: #111;
     border: 1px solid #333;
-    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
     color: #eee;
     outline: none;
 }
 
 textarea {
-    resize: none;
+    resize: vertical;
 }
 
-/* Sliders */
-.sliderBox {
-    margin-top: 10px;
-}
-
-.sliderBox input[type=range] {
-    width: 100%;
-    margin-top: 6px;
-}
-
-/* ================================
-   RIGHT PANEL (GenAIPro style)
-================================ */
-.rightPanel {
-    flex: 1;
-    background: #141414;
-    padding: 25px;
-    border: 1px solid #222;
-    border-radius: 12px;
-}
-
-.rightPanel h2 {
+.charCount {
+    margin-top: -5px;
     margin-bottom: 10px;
+    font-size: 12px;
+    opacity: 0.6;
 }
 
-.topLine {
-    margin-bottom: 20px;
+/* =========================================================
+   SLIDERS
+========================================================= */
+.sliderBox {
+    margin-top: 18px;
 }
 
-/* Buttons */
-.greenBtn,
-.blueBtn {
-    padding: 10px 16px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
+.sliderBox label {
+    display: flex;
+    justify-content: space-between;
+}
+
+input[type=range] {
+    width: 100%;
+    appearance: none;
+    height: 5px;
+    background: #333;
+    border-radius: 5px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    background: #58a6ff;
+    border-radius: 50%;
+    appearance: none;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+button {
     cursor: pointer;
-    margin-top: 10px;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-right: 8px;
+    transition: 0.2s;
+}
+
+.blueBtn {
+    background: #388bfd;
+    color: #fff;
 }
 
 .greenBtn {
-    background: #2ecc71;
-    color: #111;
-}
-
-.blueBtn {
-    background: #3498db;
+    background: #2ea043;
     color: #fff;
 }
 
 .redBtn {
-    background: #e74c3c;
+    background: #d43c3c;
     color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
 }
 
-/* ================================
-   QUEUE ITEMS
-================================ */
+button:hover {
+    opacity: 0.85;
+}
+
+.topLine {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #8fa8ff;
+}
+
+/* =========================================================
+   QUEUE BOX
+========================================================= */
 #queueContainer {
-    margin-top: 15px;
+    margin-top: 10px;
 }
 
 .queueItem {
-    background: #1d1d1d;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #333;
+    background: #121212;
+    border: 1px solid #292929;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 16px;
 }
 
-.queueItem button {
-    margin-right: 10px;
-    padding: 6px 12px;
-    border-radius: 6px;
+.queueItem progress {
+    width: 100%;
+    height: 8px;
+    margin: 10px 0;
+    appearance: none;
 }
 
-/* ================================
+.queueItem progress::-webkit-progress-bar {
+    background: #222;
+    border-radius: 4px;
+}
+
+.queueItem progress::-webkit-progress-value {
+    background: #58a6ff;
+    border-radius: 4px;
+}
+
+/* =========================================================
    HISTORY PAGE
-================================ */
-#historyContainer div {
-    background: #1a1a1a;
-    padding: 14px;
-    border-radius: 8px;
-    border: 1px solid #333;
-    margin-bottom: 12px;
+========================================================= */
+#historyContainer {
+    margin-top: 20px;
 }
 
-/* ================================
-   CUSTOM SCROLLBAR
-================================ */
+.historyItem {
+    background: #121212;
+    border: 1px solid #292929;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.historyItem audio {
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* =========================================================
+   SETTINGS PAGE
+========================================================= */
+#settingsPage textarea {
+    width: 100%;
+    height: 150px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    color: #fff;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
 ::-webkit-scrollbar {
     width: 8px;
 }
 ::-webkit-scrollbar-thumb {
-    background: #444;
+    background: #333;
     border-radius: 4px;
 }
 ::-webkit-scrollbar-track {
