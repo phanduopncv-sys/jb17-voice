@@ -1,239 +1,196 @@
 /* ============================================================
-   JB17 GENAI PRO - MAIN SCRIPT
-   TTS Studio • History • Voice Clone
-   All UI logic • Worker API • Voice Loader
-============================================================ */
+   GLOBAL — Worker Endpoint
+   ============================================================ */
 
-const WORKER = "https://tts.jb17voice.top"; // ⚠️ đổi sang worker của bạn nếu khác
+const WORKER = "https://tts.jb17voice.top";
 
 /* ============================================================
-   DOM ELEMENTS
-============================================================ */
+   UI ELEMENTS
+   ============================================================ */
 
-// Tabs
-const sideButtons = document.querySelectorAll(".side-btn");
-const tabs = document.querySelectorAll(".tab");
-
-// Studio
-const textInput = document.getElementById("inputText");
-const charCount = document.getElementById("charCount");
-const generateBtn = document.getElementById("generateBtn");
-const previewBtn = document.getElementById("previewBtn");
-const outputContainer = document.getElementById("outputContainer");
-
-// Voice controls
-const voiceSelect = document.getElementById("voiceSelect");
 const modelSelect = document.getElementById("modelSelect");
+const taskVoiceSelect = document.getElementById("taskVoiceSelect");
+const customVoiceId = document.getElementById("customVoiceId");
+const previewVoiceBtn = document.getElementById("previewVoiceBtn");
+
 const speed = document.getElementById("speed");
 const stability = document.getElementById("stability");
 const similarity = document.getElementById("similarity");
 const style = document.getElementById("style");
 
-// History
-const historyList = document.getElementById("historyList");
-const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+const speedVal = document.getElementById("speedVal");
+const stabilityVal = document.getElementById("stabilityVal");
+const similarityVal = document.getElementById("similarityVal");
+const styleVal = document.getElementById("styleVal");
 
-// Credits
-const creditAmount = document.getElementById("creditAmount");
+const inputText = document.getElementById("inputText");
+const addToQueueBtn = document.getElementById("addToQueueBtn");
+const queueContainer = document.getElementById("queueContainer");
 
-/* ============================================================
-   1. CHANGE TAB
-============================================================ */
-
-sideButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-        sideButtons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        const tab = btn.dataset.tab;
-
-        tabs.forEach(t => t.classList.remove("active"));
-        document.getElementById(tab).classList.add("active");
-    });
-});
+let history = JSON.parse(localStorage.getItem("tts_history") || "[]");
 
 /* ============================================================
-   2. CHAR COUNTER
-============================================================ */
-
-textInput.addEventListener("input", () => {
-    charCount.textContent = textInput.value.length;
-});
-
-/* ============================================================
-   3. LOAD VOICES FROM WORKER
-============================================================ */
+   LOAD VOICES FROM WORKER
+   ============================================================ */
 
 async function loadVoices() {
     try {
-        const res = await fetch(WORKER + "/voices");
-        const data = await res.json();
-
-        voiceSelect.innerHTML = "";
-
-        data.voices.forEach(v => {
-            const op = document.createElement("option");
-            op.value = v.id;
-            op.textContent = v.name;
-            voiceSelect.appendChild(op);
-        });
-
-    } catch (err) {
-        voiceSelect.innerHTML = `<option>Error loading voices</option>`;
-        console.error("Voice load error:", err);
+        taskVoiceSelect.innerHTML = `
+            <option value="EXAVITQu4vr4xnSDxMaL">Bella</option>
+            <option value="21m00Tcm4TlvDq8ikWAM">Rachel</option>
+            <option value="AZnzlk1XvdvUeBnXmlld">Domi</option>
+        `;
+    }
+    catch (e) {
+        console.error("Voice load error:", e);
     }
 }
 loadVoices();
 
 /* ============================================================
-   4. CHECK CREDITS
-============================================================ */
+   CALL WORKER FOR TTS
+   ============================================================ */
 
-async function checkCredits() {
-    try {
-        const res = await fetch(WORKER + "/credit", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: "{}"
-        });
-
-        const data = await res.json();
-
-        if (data.status === "ok") {
-            creditAmount.textContent = data.remaining.toLocaleString();
-        } else {
-            creditAmount.textContent = "Error";
-        }
-    } catch {
-        creditAmount.textContent = "Offline";
-    }
-}
-checkCredits();
-
-/* ============================================================
-   5. PREVIEW TTS
-============================================================ */
-
-previewBtn.addEventListener("click", async () => {
-    const text = textInput.value.trim();
-    if (!text) return alert("Nhập nội dung trước!");
-
-    await playTTS(text);
-});
-
-/* ============================================================
-   6. GENERATE TTS (PLAY + SAVE TO HISTORY)
-============================================================ */
-
-generateBtn.addEventListener("click", async () => {
-    const text = textInput.value.trim();
-    if (!text) return alert("Vui lòng nhập nội dung!");
-
-    await playTTS(text);
-
-    saveHistory(text);
-    renderHistory();
-});
-
-/* ============================================================
-   7. PLAY AUDIO FUNCTION
-============================================================ */
-
-async function playTTS(text) {
-    try {
-        generateBtn.textContent = "Đang tạo giọng...";
-        generateBtn.disabled = true;
-
-        const payload = {
-            text,
-            voice_id: voiceSelect.value,
-            model_id: modelSelect.value,
-            voice_settings: {
-                stability: Number(stability.value),
-                similarity_boost: Number(similarity.value),
-                style: Number(style.value),
-                speed: Number(speed.value)
-            }
-        };
-
-        const res = await fetch(WORKER + "/tts", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        if (!res.ok) throw new Error("Worker error");
-
-        const audioBlob = await res.blob();
-        const audioURL = URL.createObjectURL(audioBlob);
-
-        const audio = document.createElement("audio");
-        audio.controls = true;
-        audio.src = audioURL;
-
-        outputContainer.prepend(audio);
-
-        audio.play();
-
-    } catch (err) {
-        alert("Không thể tạo giọng nói! Kiểm tra lại worker.");
-        console.error(err);
-    } finally {
-        generateBtn.textContent = "Tạo giọng nói";
-        generateBtn.disabled = false;
-    }
-}
-
-/* ============================================================
-   8. HISTORY SYSTEM
-============================================================ */
-
-let history = JSON.parse(localStorage.getItem("jb17_history") || "[]");
-
-function saveHistory(text) {
-    history.unshift({
+async function callTTS(text, voice, model) {
+    const payload = {
         text,
-        time: new Date().toLocaleString()
+        voice_id: voice,
+        model_id: model,
+        speed: Number(speed.value),
+        stability: Number(stability.value),
+        similarity_boost: Number(similarity.value),
+        style: Number(style.value)
+    };
+
+    const res = await fetch(`${WORKER}/tts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
     });
 
-    localStorage.setItem("jb17_history", JSON.stringify(history));
+    if (!res.ok) {
+        throw new Error("Worker error: " + res.status);
+    }
+
+    const buf = await res.arrayBuffer();
+    return buf;
 }
-
-function renderHistory() {
-    historyList.innerHTML = "";
-
-    history.forEach((item, index) => {
-        const div = document.createElement("div");
-        div.className = "history-item";
-
-        div.innerHTML = `
-            <div>
-                <strong>${item.time}</strong><br>
-                ${item.text.slice(0, 60)}...
-            </div>
-            <div class="history-actions">
-                <button class="play-btn">Play</button>
-                <button class="delete-btn">Xoá</button>
-            </div>
-        `;
-
-        // PLAY FROM HISTORY
-        div.querySelector(".play-btn").onclick = () => playTTS(item.text);
-
-        // DELETE
-        div.querySelector(".delete-btn").onclick = () => {
-            history.splice(index, 1);
-            localStorage.setItem("jb17_history", JSON.stringify(history));
-            renderHistory();
-        };
-
-        historyList.appendChild(div);
-    });
-}
-renderHistory();
 
 /* ============================================================
-   END
+   PREVIEW VOICE THROUGH WORKER
+   ============================================================ */
+
+previewVoiceBtn.onclick = async () => {
+    let voice = customVoiceId.value.trim() || taskVoiceSelect.value;
+    let model = modelSelect.value;
+    
+    if (!voice) return alert("No voice selected");
+
+    try {
+        const blobData = await callTTS("This is a preview of your voice settings.", voice, model);
+        const audioBlob = new Blob([blobData], { type: "audio/mpeg" });
+        const audio = new Audio(URL.createObjectURL(audioBlob));
+        audio.play();
+    }
+    catch (err) {
+        alert("Preview error:\n" + err.message);
+    }
+};
+
+/* ============================================================
+   ADD TO QUEUE
+   ============================================================ */
+
+addToQueueBtn.onclick = async () => {
+    const text = inputText.value.trim();
+    if (!text) return alert("Text empty");
+
+    let voice = customVoiceId.value.trim() || taskVoiceSelect.value;
+    let model = modelSelect.value;
+
+    try {
+        const blobData = await callTTS(text, voice, model);
+        const blob = new Blob([blobData], { type: "audio/mpeg" });
+
+        const url = URL.createObjectURL(blob);
+        history.push({ text, voice, model, url });
+
+        localStorage.setItem("tts_history", JSON.stringify(history));
+        renderQueue();
+
+        alert("Done!");
+    }
+    catch (err) {
+        alert("Error:\n" + err.message);
+    }
+};
+
+/* ============================================================
+   RENDER HISTORY
+   ============================================================ */
+
+function renderQueue() {
+    queueContainer.innerHTML = "";
+
+    history.forEach((item, i) => {
+        const div = document.createElement("div");
+        div.className = "queueItem";
+        div.innerHTML = `
+            <p>${item.text}</p>
+            <button onclick="playAudio('${item.url}')">Play</button>
+            <button onclick="deleteQueue(${i})">Delete</button>
+        `;
+        queueContainer.appendChild(div);
+    });
+}
+
+window.playAudio = function (url) {
+    new Audio(url).play();
+};
+
+window.deleteQueue = function (i) {
+    history.splice(i, 1);
+    localStorage.setItem("tts_history", JSON.stringify(history));
+    renderQueue();
+};
+
+renderQueue();
+
+/* ============================================================
+   SLIDER UPDATE
+   ============================================================ */
+   /* ============================================================
+   CHECK WORKER API STATUS
 ============================================================ */
 
-console.log("%cJB17 GenAI Pro UI Loaded ✔", "color:#4ade80;font-size:16px;");
+async function checkAPI() {
+    const apiStatus = document.getElementById("apiStatus");
+    apiStatus.textContent = "Checking API…";
+
+    try {
+        const res = await fetch(`${WORKER}/credit`, { method: "GET" });
+        if (!res.ok) throw new Error(res.status);
+
+        const json = await res.json();
+
+        if (json.remaining !== undefined) {
+            apiStatus.style.color = "#4CAF50";
+            apiStatus.textContent = `API Connected ✓  |  Remaining: ${json.remaining}`;
+        } else {
+            apiStatus.style.color = "#f33";
+            apiStatus.textContent = "Invalid response from Worker";
+        }
+    } catch (err) {
+        apiStatus.style.color = "#f33";
+        apiStatus.textContent = `Failed to connect Worker (${err.message})`;
+    }
+}
+
+// Auto check on load
+checkAPI();
+
+
+speed.oninput = () => speedVal.textContent = Number(speed.value).toFixed(2);
+stability.oninput = () => stabilityVal.textContent = Number(stability.value).toFixed(2);
+similarity.oninput = () => similarityVal.textContent = Number(similarity.value).toFixed(2);
+style.oninput = () => styleVal.textContent = Number(style.value).toFixed(2);
