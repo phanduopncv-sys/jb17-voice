@@ -3,114 +3,130 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JB17 Voice Studio</title>
+    <title>JB17 GenAI Voice Studio</title>
+
+    <!-- FONT GENAI STYLE -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- MAIN CSS -->
     <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-    <div class="app-container">
 
-        <!-- SIDEBAR GENAI PRO STYLE -->
+    <div class="app">
+
+        <!-- ================= SIDEBAR ================= -->
         <aside class="sidebar">
-            <div class="sidebar-title">JB17 Voice Studio</div>
+            <div class="sidebar-title">JB17 Max</div>
 
-            <nav class="sidebar-menu">
-                <button class="menu-btn active" data-tab="studio">🎙️ Văn bản thành giọng nói</button>
-                <button class="menu-btn" data-tab="history">🕒 Lịch sử</button>
-                <button class="menu-btn" data-tab="settings">⚙️ Cài đặt</button>
+            <nav class="side-menu">
+                <button class="side-btn active" data-tab="studio">🎤 Văn bản thành giọng nói</button>
+                <button class="side-btn" data-tab="history">📜 Lịch sử</button>
+                <button class="side-btn" data-tab="clone">🧬 Voice Clone</button>
             </nav>
+
+            <div class="credit-box">
+                <div class="credit-label">Credits còn lại</div>
+                <div id="creditAmount" class="credit-value">Đang tải...</div>
+            </div>
         </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="main-content">
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main">
 
-            <!-- ======================= STUDIO TAB ======================= -->
-            <section id="studio" class="tab-section active">
+            <!-- ######## TAB: STUDIO ######## -->
+            <section id="studio" class="tab active">
 
-                <h2 class="tab-title">Studio</h2>
+                <h2 class="tab-title">Văn bản thành giọng nói</h2>
 
-                <div class="studio-flex">
+                <div class="studio-layout">
 
-                    <!-- LEFT: INPUT TEXT AREA -->
-                    <div class="text-box">
-                        <textarea id="inputText" placeholder="Nhập nội dung cần tạo giọng nói..."></textarea>
-                        <div class="char-count"><span id="charCount">0</span> ký tự</div>
-                        <button id="generateBtn" class="primary-btn full-width">Tạo giọng nói</button>
+                    <!-- LEFT: TEXT INPUT -->
+                    <div class="studio-left">
+                        <textarea id="inputText" placeholder="Nhập nội dung..."></textarea>
+
+                        <div class="textarea-footer">
+                            <span id="charCount">0</span> ký tự
+                        </div>
+
+                        <button id="generateBtn" class="btn-generate">Tạo giọng nói</button>
+
+                        <div id="outputContainer"></div>
                     </div>
 
-                    <!-- RIGHT: CONTROLS -->
-                    <div class="control-panel">
+                    <!-- RIGHT: CONTROL PANEL -->
+                    <div class="studio-right">
 
-                        <div class="panel-box">
-                            <label class="panel-label">Credits</label>
-                            <div id="creditStatus" class="credit-box">Checking...</div>
+                        <div class="control-card">
+                            <label>Chọn Voice</label>
+                            <select id="voiceSelect"></select>
                         </div>
 
-                        <div class="panel-box">
-                            <label class="panel-label">Voice</label>
-                            <select id="voiceSelect" class="input-select"></select>
-                        </div>
-
-                        <div class="panel-box">
-                            <label class="panel-label">Model</label>
-                            <select id="modelSelect" class="input-select">
+                        <div class="control-card">
+                            <label>Model</label>
+                            <select id="modelSelect">
+                                <option value="eleven_monolingual_v1">Monolingual v1</option>
                                 <option value="eleven_multilingual_v2">Multilingual v2</option>
-                                <option value="eleven_turbo_v2">Turbo v2</option>
                             </select>
                         </div>
 
                         <!-- SLIDERS -->
-                        <div class="panel-box">
+                        <div class="control-card">
                             <label>Speed</label>
-                            <input id="speed" type="range" min="0.5" max="2" step="0.01" value="1.0">
+                            <input id="speed" type="range" min="0.5" max="2" step="0.01" value="1.0" />
                         </div>
 
-                        <div class="panel-box">
+                        <div class="control-card">
                             <label>Stability</label>
-                            <input id="stability" type="range" min="0" max="1" step="0.01" value="1">
+                            <input id="stability" type="range" min="0" max="1" step="0.01" value="1" />
                         </div>
 
-                        <div class="panel-box">
+                        <div class="control-card">
                             <label>Similarity</label>
-                            <input id="similarity" type="range" min="0" max="1" step="0.01" value="1">
+                            <input id="similarity" type="range" min="0" max="1" step="0.01" value="1" />
                         </div>
 
-                        <div class="panel-box">
-                            <label>Style Exaggeration</label>
-                            <input id="style" type="range" min="0" max="1" step="0.01" value="0">
+                        <div class="control-card">
+                            <label>Style</label>
+                            <input id="style" type="range" min="0" max="1" step="0.01" value="0" />
                         </div>
+
+                        <button id="previewBtn" class="btn-preview">Preview</button>
 
                     </div>
 
                 </div>
+
             </section>
 
-            <!-- ======================= HISTORY TAB ======================= -->
-            <section id="history" class="tab-section">
-                <h2 class="tab-title">Lịch sử</h2>
+            <!-- ######## TAB: HISTORY ######## -->
+            <section id="history" class="tab">
+                <h2 class="tab-title">Lịch sử tạo giọng nói</h2>
+                <div id="historyList"></div>
 
-                <div id="historyList" class="history-list"></div>
-
-                <button id="clearHistoryBtn" class="danger-btn">Xóa tất cả lịch sử</button>
+                <button id="clearHistoryBtn" class="btn-clear">Xoá tất cả lịch sử</button>
             </section>
 
-            <!-- ======================= SETTINGS TAB ======================= -->
-            <section id="settings" class="tab-section">
-                <h2 class="tab-title">Cài đặt</h2>
+            <!-- ######## TAB: VOICE CLONE ######## -->
+            <section id="clone" class="tab">
+                <h2 class="tab-title">Clone giọng nói</h2>
 
-                <div class="settings-box">
-                    <label>Worker Endpoint</label>
-                    <input id="workerEndpoint" type="text" class="input-text" placeholder="https://tts.example.workers.dev" />
+                <div class="clone-card">
+                    <label>Tải file giọng mẫu (MP3/WAV)</label>
+                    <input type="file" accept="audio/*" class="clone-input" />
+
+                    <button class="btn-clone">Tải lên & clone giọng</button>
                 </div>
 
-                <button id="saveSettingsBtn" class="primary-btn">Lưu thay đổi</button>
             </section>
 
         </main>
+
     </div>
 
+    <!-- MAIN SCRIPT -->
     <script src="main.js"></script>
-    <script src="settings.js"></script>
 
 </body>
 </html>
