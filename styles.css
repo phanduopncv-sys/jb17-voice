@@ -1,6 +1,7 @@
-/* ===========================
-   GLOBAL DARK THEME
-   =========================== */
+/* ============================================================
+   GLOBAL THEME – DARK PREMIUM (GenAI Pro style)
+============================================================ */
+
 * {
     margin: 0;
     padding: 0;
@@ -9,217 +10,260 @@
 }
 
 body {
-    background-color: #0d0f13;
+    background: #0e0f12;
     color: #e5e7eb;
+}
+
+/* APP WRAPPER */
+.app {
+    display: flex;
     height: 100vh;
     overflow: hidden;
 }
 
-.app-container {
-    display: flex;
-    height: 100vh;
-}
-
-/* ===========================
+/* ============================================================
    SIDEBAR
-   =========================== */
+============================================================ */
 .sidebar {
-    width: 240px;
+    width: 280px;
     background: #111318;
     border-right: 1px solid #1f232d;
-    padding: 20px;
+    padding: 25px;
     display: flex;
     flex-direction: column;
 }
 
 .sidebar-title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
+    margin-bottom: 26px;
     color: #fff;
-    margin-bottom: 25px;
 }
 
-.sidebar-menu {
+.side-menu {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
-.menu-btn {
-    padding: 12px 14px;
-    background: transparent;
-    border: none;
+.side-btn {
+    padding: 12px 16px;
     text-align: left;
-    color: #9ca3af;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
     font-size: 15px;
-    border-radius: 8px;
+    color: #9ca3af;
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.2s ease;
 }
 
-.menu-btn:hover {
+.side-btn:hover {
     background: #1a1d25;
     color: #fff;
 }
 
-.menu-btn.active {
+.side-btn.active {
     background: #2563eb;
-    color: white;
+    color: #fff;
+    box-shadow: 0px 0px 12px rgba(37, 99, 235, 0.4);
 }
 
-/* ===========================
+/* Credits box */
+.credit-box {
+    margin-top: auto;
+    background: #1b1e24;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #22262f;
+}
+
+.credit-label {
+    color: #9ca3af;
+    font-size: 14px;
+}
+
+.credit-value {
+    margin-top: 4px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* ============================================================
    MAIN CONTENT
-   =========================== */
-.main-content {
+============================================================ */
+.main {
     flex: 1;
-    padding: 25px;
+    padding: 30px;
     overflow-y: auto;
 }
 
+.tab {
+    display: none;
+}
+
+.tab.active {
+    display: block;
+}
+
 .tab-title {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 700;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
 
-/* ===========================
+/* ============================================================
    STUDIO LAYOUT
-   =========================== */
-.studio-flex {
+============================================================ */
+.studio-layout {
     display: flex;
-    gap: 20px;
-    height: calc(100vh - 120px);
+    gap: 24px;
 }
 
-/* LEFT TEXT INPUT */
-.text-box {
+/* LEFT Input Block */
+.studio-left {
     flex: 2;
+    background: #14161b;
+    padding: 22px;
+    border-radius: 14px;
+    border: 1px solid #1f232d;
     display: flex;
     flex-direction: column;
-    background: #111318;
-    border: 1px solid #1f232d;
-    border-radius: 12px;
-    padding: 20px;
 }
 
-.text-box textarea {
+#inputText {
     background: #0d0f13;
-    border: 1px solid #2a2f3b;
-    border-radius: 10px;
-    padding: 18px;
-    font-size: 16px;
-    color: #e5e7eb;
+    border: 1px solid #2b303b;
+    color: #fff;
+    font-size: 15px;
+    padding: 20px;
     resize: none;
-    height: 70%;
-}
-
-.text-box textarea:focus {
-    border-color: #2563eb;
+    height: 280px;
+    border-radius: 12px;
     outline: none;
+    transition: 0.2s;
 }
 
-.char-count {
+#inputText:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+}
+
+.textarea-footer {
     margin-top: 8px;
+    margin-bottom: 12px;
+    text-align: right;
     font-size: 14px;
     color: #9ca3af;
-    text-align: right;
 }
 
-.full-width {
+/* Button CREATE */
+.btn-generate {
     width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
+    transition: 0.2s;
 }
 
-/* RIGHT CONTROL PANEL */
-.control-panel {
+.btn-generate:hover {
+    background: linear-gradient(135deg, #1d4ed8, #2563eb);
+}
+
+/* OUTPUT AUDIO */
+#outputContainer audio {
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* ============================================================
+   RIGHT CONTROL PANEL
+============================================================ */
+.studio-right {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 18px;
 }
 
-.panel-box {
-    background: #111318;
-    border: 1px solid #1f232d;
+.control-card {
+    background: #14161b;
+    padding: 18px;
     border-radius: 12px;
-    padding: 15px 18px;
+    border: 1px solid #1f232d;
 }
 
-.panel-label {
-    color: #9ca3af;
+.control-card label {
     font-size: 14px;
+    color: #d1d5db;
     margin-bottom: 6px;
     display: block;
 }
 
-.input-select,
-.input-text {
+/* INPUT SELECT */
+#voiceSelect,
+#modelSelect {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: 8px;
-    background: #0d0f13;
-    border: 1px solid #2a2f3b;
+    padding: 12px;
+    border-radius: 10px;
+    background: #0f1115;
+    border: 1px solid #2b303b;
     color: white;
     font-size: 14px;
-}
-
-.input-select:focus,
-.input-text:focus {
-    border-color: #2563eb;
     outline: none;
 }
 
-/* Sliders */
-input[type="range"] {
+#voiceSelect:focus,
+#modelSelect:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+}
+
+/* SLIDERS */
+input[type=range] {
     width: 100%;
+    cursor: pointer;
     accent-color: #2563eb;
 }
 
-/* Buttons */
-.primary-btn {
-    background: #2563eb;
+/* PREVIEW BUTTON */
+.btn-preview {
+    width: 100%;
+    padding: 14px;
+    background: #374151;
     border: none;
-    padding: 14px 18px;
     border-radius: 10px;
-    cursor: pointer;
     color: white;
-    font-size: 16px;
+    font-size: 15px;
+    margin-top: 10px;
+    cursor: pointer;
     transition: 0.2s;
 }
 
-.primary-btn:hover {
-    background: #1d4ed8;
+.btn-preview:hover {
+    background: #4b5563;
 }
 
-.danger-btn {
-    background: #dc2626;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-.danger-btn:hover {
-    background: #b91c1c;
-}
-
-/* ===========================
-   HISTORY LIST
-   =========================== */
-.history-list {
-    background: #111318;
+/* ============================================================
+   HISTORY TAB
+============================================================ */
+#historyList {
+    background: #14161b;
+    padding: 16px;
+    border-radius: 12px;
     border: 1px solid #1f232d;
-    border-radius: 10px;
-    padding: 15px;
-    max-width: 600px;
 }
 
 .history-item {
-    padding: 12px;
-    border-bottom: 1px solid #1f232d;
     display: flex;
     justify-content: space-between;
+    padding: 14px;
+    border-bottom: 1px solid #1f232d;
 }
 
 .history-item:last-child {
@@ -228,51 +272,74 @@ input[type="range"] {
 
 .history-actions button {
     padding: 6px 10px;
-    margin-left: 6px;
     border-radius: 6px;
+    border: none;
+    color: white;
     cursor: pointer;
-    font-size: 13px;
 }
 
-.play-btn {
+/* Clear button */
+.btn-clear {
+    margin-top: 20px;
+    background: #dc2626;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-clear:hover {
+    background: #b91c1c;
+}
+
+/* ============================================================
+   CLONE TAB
+============================================================ */
+.clone-card {
+    background: #14161b;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #1f232d;
+    max-width: 450px;
+}
+
+.clone-input {
+    margin-top: 10px;
+    padding: 14px;
+    border-radius: 10px;
+    background: #0f1115;
+    border: 1px solid #2b303b;
+    color: #fff;
+}
+
+.btn-clone {
+    margin-top: 18px;
+    width: 100%;
+    padding: 14px;
     background: #2563eb;
     color: white;
-    border: none;
-}
-
-.delete-btn {
-    background: #b91c1c;
-    border: none;
-    color: white;
-}
-
-/* ===========================
-   SETTINGS
-   =========================== */
-.settings-box {
-    background: #111318;
-    padding: 20px;
-    border: 1px solid #1f232d;
     border-radius: 10px;
-    max-width: 500px;
+    border: none;
+    cursor: pointer;
 }
 
-.input-text {
-    margin-top: 10px;
+.btn-clone:hover {
+    background: #1d4ed8;
 }
 
-/* ===========================
-   SCROLLBAR BEAUTY
-   =========================== */
+/* ============================================================
+   SCROLLBAR
+============================================================ */
 ::-webkit-scrollbar {
-    width: 7px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #2c303a;
+    background: #2b303b;
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #3b4250;
+    background: #3a3f4b;
 }
