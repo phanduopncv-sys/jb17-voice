@@ -1,132 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JB17 GenAI Voice Studio</title>
-
-    <!-- FONT GENAI STYLE -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-    <!-- MAIN CSS -->
-    <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<title>JB17 Voice Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-    <div class="app">
+<!-- =========================================================
+     NAVIGATION BAR
+========================================================= -->
+<div id="navbar">
+    <div class="logo">JB17 Voice Studio</div>
+    <div class="nav-links">
+        <a href="#" id="navStudio" class="active">Studio</a>
+        <a href="#" id="navHistory">History</a>
+        <a href="#" id="navSettings">Settings</a>
+    </div>
+</div>
 
-        <!-- ================= SIDEBAR ================= -->
-        <aside class="sidebar">
-            <div class="sidebar-title">JB17 Max</div>
 
-            <nav class="side-menu">
-                <button class="side-btn active" data-tab="studio">🎤 Văn bản thành giọng nói</button>
-                <button class="side-btn" data-tab="history">📜 Lịch sử</button>
-                <button class="side-btn" data-tab="clone">🧬 Voice Clone</button>
-            </nav>
+<!-- =========================================================
+     STUDIO PAGE
+========================================================= -->
+<div id="studioPage" class="page active">
 
-            <div class="credit-box">
-                <div class="credit-label">Credits còn lại</div>
-                <div id="creditAmount" class="credit-value">Đang tải...</div>
-            </div>
-        </aside>
+    <div class="leftPanel">
 
-        <!-- ================= MAIN CONTENT ================= -->
-        <main class="main">
+        <h2>Voice Settings</h2>
 
-            <!-- ######## TAB: STUDIO ######## -->
-            <section id="studio" class="tab active">
+        <!-- MODEL -->
+        <label>Model</label>
+        <select id="modelSelect">
+            <option value="eleven_multilingual_v2">Eleven Multilingual v2</option>
+            <option value="eleven_turbo_v2">Eleven Turbo v2</option>
+        </select>
 
-                <h2 class="tab-title">Văn bản thành giọng nói</h2>
+        <!-- SPEED -->
+        <div class="sliderBox">
+            <label>Speed <span id="speedVal">1.00</span></label>
+            <input type="range" id="speed" min="0" max="2" step="0.01" value="1.00">
+        </div>
 
-                <div class="studio-layout">
+        <!-- STABILITY -->
+        <div class="sliderBox">
+            <label>Stability <span id="stabilityVal">1.00</span></label>
+            <input type="range" id="stability" min="0" max="2" step="0.01" value="1.00">
+        </div>
 
-                    <!-- LEFT: TEXT INPUT -->
-                    <div class="studio-left">
-                        <textarea id="inputText" placeholder="Nhập nội dung..."></textarea>
+        <!-- SIMILARITY -->
+        <div class="sliderBox">
+            <label>Similarity <span id="similarityVal">1.00</span></label>
+            <input type="range" id="similarity" min="0" max="2" step="0.01" value="1.00">
+        </div>
 
-                        <div class="textarea-footer">
-                            <span id="charCount">0</span> ký tự
-                        </div>
-
-                        <button id="generateBtn" class="btn-generate">Tạo giọng nói</button>
-
-                        <div id="outputContainer"></div>
-                    </div>
-
-                    <!-- RIGHT: CONTROL PANEL -->
-                    <div class="studio-right">
-
-                        <div class="control-card">
-                            <label>Chọn Voice</label>
-                            <select id="voiceSelect"></select>
-                        </div>
-
-                        <div class="control-card">
-                            <label>Model</label>
-                            <select id="modelSelect">
-                                <option value="eleven_monolingual_v1">Monolingual v1</option>
-                                <option value="eleven_multilingual_v2">Multilingual v2</option>
-                            </select>
-                        </div>
-
-                        <!-- SLIDERS -->
-                        <div class="control-card">
-                            <label>Speed</label>
-                            <input id="speed" type="range" min="0.5" max="2" step="0.01" value="1.0" />
-                        </div>
-
-                        <div class="control-card">
-                            <label>Stability</label>
-                            <input id="stability" type="range" min="0" max="1" step="0.01" value="1" />
-                        </div>
-
-                        <div class="control-card">
-                            <label>Similarity</label>
-                            <input id="similarity" type="range" min="0" max="1" step="0.01" value="1" />
-                        </div>
-
-                        <div class="control-card">
-                            <label>Style</label>
-                            <input id="style" type="range" min="0" max="1" step="0.01" value="0" />
-                        </div>
-
-                        <button id="previewBtn" class="btn-preview">Preview</button>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-            <!-- ######## TAB: HISTORY ######## -->
-            <section id="history" class="tab">
-                <h2 class="tab-title">Lịch sử tạo giọng nói</h2>
-                <div id="historyList"></div>
-
-                <button id="clearHistoryBtn" class="btn-clear">Xoá tất cả lịch sử</button>
-            </section>
-
-            <!-- ######## TAB: VOICE CLONE ######## -->
-            <section id="clone" class="tab">
-                <h2 class="tab-title">Clone giọng nói</h2>
-
-                <div class="clone-card">
-                    <label>Tải file giọng mẫu (MP3/WAV)</label>
-                    <input type="file" accept="audio/*" class="clone-input" />
-
-                    <button class="btn-clone">Tải lên & clone giọng</button>
-                </div>
-
-            </section>
-
-        </main>
+        <!-- STYLE -->
+        <div class="sliderBox">
+            <label>Style Exaggeration <span id="styleVal">0.00</span></label>
+            <input type="range" id="style" min="0" max="2" step="0.01" value="0">
+        </div>
 
     </div>
 
-    <!-- MAIN SCRIPT -->
-    <script src="main.js"></script>
+
+    <!-- =======================================================
+         RIGHT PANEL — QUEUE + INPUT
+    ======================================================== -->
+    <div class="rightPanel">
+
+        <h2>Studio</h2>
+
+        <div class="topLine">
+            <span id="apiStatus">Checking API…</span>
+        </div>
+
+        <!-- SELECT VOICE -->
+        <label>Select Voice</label>
+        <select id="taskVoiceSelect"></select>
+
+        <!-- PREVIEW BUTTON -->
+        <button id="previewVoiceBtn" class="greenBtn">🔊 Preview Voice</button>
+
+        <!-- CUSTOM ID -->
+        <label>Or enter custom Voice ID:</label>
+        <input id="customVoiceId" type="text" placeholder="Enter ElevenLabs Voice ID…">
+
+        <!-- TEXT INPUT -->
+        <label>Enter text</label>
+        <textarea id="inputText" rows="7" placeholder="Type or paste your text here…"></textarea>
+
+        <button id="addToQueueBtn" class="blueBtn" style="margin-top:10px;">+ Add to Queue</button>
+
+        <h3 style="margin-top:20px;">Queue</h3>
+
+        <!-- QUEUE BOX -->
+        <div id="queueContainer"></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     HISTORY PAGE
+========================================================= -->
+<div id="historyPage" class="page">
+    <h2>History</h2>
+
+    <div id="historyContainer"></div>
+
+    <button id="clearHistoryBtn" class="redBtn" style="margin-top:20px;">
+        Clear All History
+    </button>
+</div>
+
+
+
+<!-- =========================================================
+     SETTINGS PAGE
+========================================================= -->
+<div id="settingsPage" class="page">
+    <h2>Authentication</h2>
+    <p style="color:#4CAF50; margin-top:10px;">
+        No API keys required.  
+        <br>
+        Your Cloudflare Worker now handles authentication securely ✓
+    </p>
+
+    <button id="saveKeysBtn" class="blueBtn">OK</button>
+    <button id="testKeysBtn" class="greenBtn">Check</button>
+</div>
+
+
+
+
+<!-- =========================================================
+     JS
+========================================================= -->
+<script src="main.js"></script>
+
+<script>
+/* PAGE SWITCH */
+document.getElementById("navStudio").onclick = () => switchPage("studioPage", "navStudio");
+document.getElementById("navHistory").onclick = () => switchPage("historyPage", "navHistory");
+document.getElementById("navSettings").onclick = () => switchPage("settingsPage", "navSettings");
+
+function switchPage(pageId, navId){
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+
+    document.querySelectorAll(".nav-links a").forEach(a => a.classList.remove("active"));
+    document.getElementById(navId).classList.add("active");
+}
+</script>
 
 </body>
 </html>
