@@ -1,231 +1,239 @@
 /* ============================================================
-   JB17 VOICE PRO - FRONTEND SCRIPT
-   GenAIPro UI Style – Dark Premium
-   Worker endpoint auto-called
-   ============================================================ */
+   JB17 GENAI PRO - MAIN SCRIPT
+   TTS Studio • History • Voice Clone
+   All UI logic • Worker API • Voice Loader
+============================================================ */
 
-// ===== WORKER ENDPOINT =====
-const WORKER = "https://tts.jb17voice.top";   // ⚠️ Thay đúng domain worker của bạn
+const WORKER = "https://tts.jb17voice.top"; // ⚠️ đổi sang worker của bạn nếu khác
 
-// ===== UI ELEMENTS =====
-const voiceSelect = document.getElementById("voiceSelect");
+/* ============================================================
+   DOM ELEMENTS
+============================================================ */
+
+// Tabs
+const sideButtons = document.querySelectorAll(".side-btn");
+const tabs = document.querySelectorAll(".tab");
+
+// Studio
+const textInput = document.getElementById("inputText");
+const charCount = document.getElementById("charCount");
+const generateBtn = document.getElementById("generateBtn");
 const previewBtn = document.getElementById("previewBtn");
-const inputText = document.getElementById("inputText");
-const addToQueueBtn = document.getElementById("addToQueue");
-const apiStatus = document.getElementById("apiStatus");
+const outputContainer = document.getElementById("outputContainer");
 
-// Sliders
-const speedSlider = document.getElementById("speedSlider");
-const pitchSlider = document.getElementById("pitchSlider");
-const volumeSlider = document.getElementById("volumeSlider");
+// Voice controls
+const voiceSelect = document.getElementById("voiceSelect");
+const modelSelect = document.getElementById("modelSelect");
+const speed = document.getElementById("speed");
+const stability = document.getElementById("stability");
+const similarity = document.getElementById("similarity");
+const style = document.getElementById("style");
 
-// Queue + History
-let queue = [];
-let history = JSON.parse(localStorage.getItem("tts_history")) || [];
+// History
+const historyList = document.getElementById("historyList");
+const clearHistoryBtn = document.getElementById("clearHistoryBtn");
 
-// Init tabs
-function showTab(tab) {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".main-content section").forEach(s => s.style.display = "none");
-
-    document.getElementById(tab).style.display = "block";
-    document.querySelector(`.tab[data-tab="${tab}"]`).classList.add("active");
-}
-showTab("studio");
+// Credits
+const creditAmount = document.getElementById("creditAmount");
 
 /* ============================================================
-   1) CHECK WORKER API STATUS
-   ============================================================ */
-async function checkWorkerAPI() {
-    try {
-        const res = await fetch(`${WORKER}/credit`);
-        const data = await res.json();
+   1. CHANGE TAB
+============================================================ */
 
-        if (data.status === "ok") {
-            apiStatus.textContent = `API Connected ✓ | Remaining: ${data.remaining}`;
-            apiStatus.style.color = "#10b981";
-        } else {
-            apiStatus.textContent = "API Error – Check Worker";
-            apiStatus.style.color = "#ef4444";
-        }
-    } catch {
-        apiStatus.textContent = "API Offline – Worker lỗi!";
-        apiStatus.style.color = "#ef4444";
-    }
-}
-checkWorkerAPI();
+sideButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        sideButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        const tab = btn.dataset.tab;
+
+        tabs.forEach(t => t.classList.remove("active"));
+        document.getElementById(tab).classList.add("active");
+    });
+});
 
 /* ============================================================
-   2) LOAD VOICE LIST FROM WORKER
-   ============================================================ */
+   2. CHAR COUNTER
+============================================================ */
+
+textInput.addEventListener("input", () => {
+    charCount.textContent = textInput.value.length;
+});
+
+/* ============================================================
+   3. LOAD VOICES FROM WORKER
+============================================================ */
+
 async function loadVoices() {
     try {
-        const res = await fetch(`${WORKER}/voices`);
-        const voices = await res.json();
+        const res = await fetch(WORKER + "/voices");
+        const data = await res.json();
 
         voiceSelect.innerHTML = "";
 
-        voices.forEach(v => {
-            const opt = document.createElement("option");
-            opt.value = v.voice_id;
-            opt.textContent = v.name;
-            voiceSelect.appendChild(opt);
+        data.voices.forEach(v => {
+            const op = document.createElement("option");
+            op.value = v.id;
+            op.textContent = v.name;
+            voiceSelect.appendChild(op);
         });
-    } catch {
+
+    } catch (err) {
         voiceSelect.innerHTML = `<option>Error loading voices</option>`;
+        console.error("Voice load error:", err);
     }
 }
 loadVoices();
 
 /* ============================================================
-   3) PREVIEW TTS
-   ============================================================ */
-previewBtn.addEventListener("click", async () => {
-    const text = inputText.value.trim();
-    if (!text) return alert("Nhập nội dung để preview!");
+   4. CHECK CREDITS
+============================================================ */
 
+async function checkCredits() {
     try {
-        const res = await fetch(`${WORKER}/tts`, {
+        const res = await fetch(WORKER + "/credit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                text,
-                voice_id: voiceSelect.value,
-                model_id: "eleven_multilingual_v2",
-                voice_settings: {
-                    stability: pitchSlider.value,
-                    similarity_boost: 1.0,
-                    style: 0,
-                    speed: speedSlider.value
-                }
-            })
+            body: "{}"
+        });
+
+        const data = await res.json();
+
+        if (data.status === "ok") {
+            creditAmount.textContent = data.remaining.toLocaleString();
+        } else {
+            creditAmount.textContent = "Error";
+        }
+    } catch {
+        creditAmount.textContent = "Offline";
+    }
+}
+checkCredits();
+
+/* ============================================================
+   5. PREVIEW TTS
+============================================================ */
+
+previewBtn.addEventListener("click", async () => {
+    const text = textInput.value.trim();
+    if (!text) return alert("Nhập nội dung trước!");
+
+    await playTTS(text);
+});
+
+/* ============================================================
+   6. GENERATE TTS (PLAY + SAVE TO HISTORY)
+============================================================ */
+
+generateBtn.addEventListener("click", async () => {
+    const text = textInput.value.trim();
+    if (!text) return alert("Vui lòng nhập nội dung!");
+
+    await playTTS(text);
+
+    saveHistory(text);
+    renderHistory();
+});
+
+/* ============================================================
+   7. PLAY AUDIO FUNCTION
+============================================================ */
+
+async function playTTS(text) {
+    try {
+        generateBtn.textContent = "Đang tạo giọng...";
+        generateBtn.disabled = true;
+
+        const payload = {
+            text,
+            voice_id: voiceSelect.value,
+            model_id: modelSelect.value,
+            voice_settings: {
+                stability: Number(stability.value),
+                similarity_boost: Number(similarity.value),
+                style: Number(style.value),
+                speed: Number(speed.value)
+            }
+        };
+
+        const res = await fetch(WORKER + "/tts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
         });
 
         if (!res.ok) throw new Error("Worker error");
 
         const audioBlob = await res.blob();
-        const url = URL.createObjectURL(audioBlob);
+        const audioURL = URL.createObjectURL(audioBlob);
 
-        const audio = new Audio(url);
+        const audio = document.createElement("audio");
+        audio.controls = true;
+        audio.src = audioURL;
+
+        outputContainer.prepend(audio);
+
         audio.play();
-    } catch {
-        alert("Preview error: Worker error!");
-    }
-});
 
-/* ============================================================
-   4) ADD TO QUEUE
-   ============================================================ */
-addToQueueBtn.addEventListener("click", () => {
-    const text = inputText.value.trim();
-    if (!text) return alert("Nhập nội dung!");
-
-    queue.push({
-        id: Date.now(),
-        text,
-        voice: voiceSelect.value
-    });
-
-    renderQueue();
-});
-
-function renderQueue() {
-    const queueList = document.getElementById("queueList");
-    queueList.innerHTML = "";
-
-    queue.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "history-item";
-        div.innerHTML = `
-            <span>${item.text.slice(0, 40)}...</span>
-            <div class="history-actions">
-                <button class="play-btn">Play</button>
-                <button class="delete-btn">Delete</button>
-            </div>
-        `;
-
-        div.querySelector(".play-btn").onclick = () => playQueueItem(item);
-        div.querySelector(".delete-btn").onclick = () => {
-            queue = queue.filter(q => q.id !== item.id);
-            renderQueue();
-        };
-
-        queueList.appendChild(div);
-    });
-}
-
-/* ============================================================
-   5) PLAY FROM QUEUE
-   ============================================================ */
-async function playQueueItem(item) {
-    try {
-        const res = await fetch(`${WORKER}/tts`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                text: item.text,
-                voice_id: item.voice,
-                model_id: "eleven_multilingual_v2",
-                voice_settings: {
-                    stability: pitchSlider.value,
-                    similarity_boost: 1.0,
-                    style: 0,
-                    speed: speedSlider.value
-                }
-            })
-        });
-
-        const audioBlob = await res.blob();
-        const url = URL.createObjectURL(audioBlob);
-        new Audio(url).play();
-
-        saveHistory(item.text);
-    } catch {
-        alert("Error generating audio!");
+    } catch (err) {
+        alert("Không thể tạo giọng nói! Kiểm tra lại worker.");
+        console.error(err);
+    } finally {
+        generateBtn.textContent = "Tạo giọng nói";
+        generateBtn.disabled = false;
     }
 }
 
 /* ============================================================
-   6) HISTORY SYSTEM
-   ============================================================ */
+   8. HISTORY SYSTEM
+============================================================ */
+
+let history = JSON.parse(localStorage.getItem("jb17_history") || "[]");
+
 function saveHistory(text) {
-    history.push({
+    history.unshift({
         text,
         time: new Date().toLocaleString()
     });
 
-    localStorage.setItem("tts_history", JSON.stringify(history));
-    renderHistory();
+    localStorage.setItem("jb17_history", JSON.stringify(history));
 }
 
 function renderHistory() {
-    const list = document.getElementById("historyList");
-    list.innerHTML = "";
+    historyList.innerHTML = "";
 
-    history.forEach((h, i) => {
+    history.forEach((item, index) => {
         const div = document.createElement("div");
         div.className = "history-item";
+
         div.innerHTML = `
-            <span>${h.text.slice(0, 40)}...</span>
+            <div>
+                <strong>${item.time}</strong><br>
+                ${item.text.slice(0, 60)}...
+            </div>
             <div class="history-actions">
                 <button class="play-btn">Play</button>
-                <button class="delete-btn">Delete</button>
+                <button class="delete-btn">Xoá</button>
             </div>
         `;
 
-        div.querySelector(".play-btn").onclick = () => inputText.value = h.text;
+        // PLAY FROM HISTORY
+        div.querySelector(".play-btn").onclick = () => playTTS(item.text);
+
+        // DELETE
         div.querySelector(".delete-btn").onclick = () => {
-            history.splice(i, 1);
-            localStorage.setItem("tts_history", JSON.stringify(history));
+            history.splice(index, 1);
+            localStorage.setItem("jb17_history", JSON.stringify(history));
             renderHistory();
         };
 
-        list.appendChild(div);
+        historyList.appendChild(div);
     });
 }
 renderHistory();
 
 /* ============================================================
    END
-   ============================================================ */
-console.log("JB17 Voice Studio Loaded Successfully!");
+============================================================ */
+
+console.log("%cJB17 GenAI Pro UI Loaded ✔", "color:#4ade80;font-size:16px;");
