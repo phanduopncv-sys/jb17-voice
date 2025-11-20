@@ -1,0 +1,276 @@
+/* =========================================================
+   BASE
+========================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    background: #0e0e0e;
+    color: #f2f2f2;
+    padding-bottom: 100px;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+#navbar {
+    width: 100%;
+    height: 58px;
+    background: #151515;
+    border-bottom: 1px solid #222;
+    display: flex;
+    align-items: center;
+    padding: 0 25px;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+#navbar .logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: #71a7ff;
+}
+
+#navbar .nav-links a {
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 15px;
+    color: #aaa;
+    transition: 0.2s;
+}
+
+#navbar .nav-links a:hover,
+#navbar .nav-links a.active {
+    color: #fff;
+}
+
+/* =========================================================
+   PAGE WRAPPER
+========================================================= */
+.page {
+    display: none;
+    padding: 30px 40px;
+}
+
+.page.active {
+    display: block;
+}
+
+/* =========================================================
+   STUDIO PANELS
+========================================================= */
+#studioPage {
+    display: flex;
+    gap: 28px;
+}
+
+/* LEFT PANEL */
+.leftPanel {
+    width: 32%;
+    background: #151515;
+    border: 1px solid #222;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+/* RIGHT PANEL */
+.rightPanel {
+    width: 68%;
+    background: #151515;
+    border: 1px solid #222;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+/* =========================================================
+   INPUT ELEMENTS
+========================================================= */
+label {
+    display: block;
+    margin-top: 14px;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+select,
+input[type=text],
+textarea {
+    width: 100%;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    color: #eee;
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.charCount {
+    margin-top: -5px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+/* =========================================================
+   SLIDERS
+========================================================= */
+.sliderBox {
+    margin-top: 18px;
+}
+
+.sliderBox label {
+    display: flex;
+    justify-content: space-between;
+}
+
+input[type=range] {
+    width: 100%;
+    appearance: none;
+    height: 5px;
+    background: #333;
+    border-radius: 5px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    background: #58a6ff;
+    border-radius: 50%;
+    appearance: none;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+button {
+    cursor: pointer;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-right: 8px;
+    transition: 0.2s;
+}
+
+.blueBtn {
+    background: #388bfd;
+    color: #fff;
+}
+
+.greenBtn {
+    background: #2ea043;
+    color: #fff;
+}
+
+.redBtn {
+    background: #d43c3c;
+    color: #fff;
+}
+
+button:hover {
+    opacity: 0.85;
+}
+
+.topLine {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #8fa8ff;
+}
+
+/* =========================================================
+   QUEUE BOX
+========================================================= */
+#queueContainer {
+    margin-top: 10px;
+}
+
+.queueItem {
+    background: #121212;
+    border: 1px solid #292929;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.queueItem progress {
+    width: 100%;
+    height: 8px;
+    margin: 10px 0;
+    appearance: none;
+}
+
+.queueItem progress::-webkit-progress-bar {
+    background: #222;
+    border-radius: 4px;
+}
+
+.queueItem progress::-webkit-progress-value {
+    background: #58a6ff;
+    border-radius: 4px;
+}
+
+/* =========================================================
+   HISTORY PAGE
+========================================================= */
+#historyContainer {
+    margin-top: 20px;
+}
+
+.historyItem {
+    background: #121212;
+    border: 1px solid #292929;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.historyItem audio {
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* =========================================================
+   SETTINGS PAGE
+========================================================= */
+#settingsPage textarea {
+    width: 100%;
+    height: 150px;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px;
+    color: #fff;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+    background: #111;
+}

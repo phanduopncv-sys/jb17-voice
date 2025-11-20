@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JB17 Voice Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVIGATION BAR
+========================================================= -->
+<div id="navbar">
+    <div class="logo">JB17 Voice Studio</div>
+    <div class="nav-links">
+        <a href="#" id="navStudio" class="active">Studio</a>
+        <a href="#" id="navHistory">History</a>
+        <a href="#" id="navSettings">Settings</a>
+    </div>
+</div>
+
+
+<!-- =========================================================
+     STUDIO PAGE
+========================================================= -->
+<div id="studioPage" class="page active">
+
+    <div class="leftPanel">
+
+        <h2>Voice Settings</h2>
+
+        <!-- MODEL -->
+        <label>Model</label>
+        <select id="modelSelect">
+            <option value="eleven_multilingual_v2">Eleven Multilingual v2</option>
+            <option value="eleven_turbo_v2">Eleven Turbo v2</option>
+        </select>
+
+        <!-- SPEED -->
+        <div class="sliderBox">
+            <label>Speed <span id="speedVal">1.00</span></label>
+            <input type="range" id="speed" min="0" max="2" step="0.01" value="1.00">
+        </div>
+
+        <!-- STABILITY -->
+        <div class="sliderBox">
+            <label>Stability <span id="stabilityVal">1.00</span></label>
+            <input type="range" id="stability" min="0" max="2" step="0.01" value="1.00">
+        </div>
+
+        <!-- SIMILARITY -->
+        <div class="sliderBox">
+            <label>Similarity <span id="similarityVal">1.00</span></label>
+            <input type="range" id="similarity" min="0" max="2" step="0.01" value="1.00">
+        </div>
+
+        <!-- STYLE -->
+        <div class="sliderBox">
+            <label>Style Exaggeration <span id="styleVal">0.00</span></label>
+            <input type="range" id="style" min="0" max="2" step="0.01" value="0">
+        </div>
+
+    </div>
+
+
+    <!-- =======================================================
+         RIGHT PANEL — QUEUE + INPUT
+    ======================================================== -->
+    <div class="rightPanel">
+
+        <h2>Studio</h2>
+
+        <div class="topLine">
+            <span id="apiStatus">Checking API…</span>
+        </div>
+
+        <!-- SELECT VOICE -->
+        <label>Select Voice</label>
+        <select id="taskVoiceSelect"></select>
+
+        <!-- PREVIEW BUTTON -->
+        <button id="previewVoiceBtn" class="greenBtn">🔊 Preview Voice</button>
+
+        <!-- CUSTOM ID -->
+        <label>Or enter custom Voice ID:</label>
+        <input id="customVoiceId" type="text" placeholder="Enter ElevenLabs Voice ID…">
+
+        <!-- TEXT INPUT -->
+        <label>Enter text</label>
+        <textarea id="inputText" rows="7" placeholder="Type or paste your text here…"></textarea>
+
+        <button id="addToQueueBtn" class="blueBtn" style="margin-top:10px;">+ Add to Queue</button>
+
+        <h3 style="margin-top:20px;">Queue</h3>
+
+        <!-- QUEUE BOX -->
+        <div id="queueContainer"></div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     HISTORY PAGE
+========================================================= -->
+<div id="historyPage" class="page">
+    <h2>History</h2>
+
+    <div id="historyContainer"></div>
+
+    <button id="clearHistoryBtn" class="redBtn" style="margin-top:20px;">
+        Clear All History
+    </button>
+</div>
+
+
+
+<!-- =========================================================
+     SETTINGS PAGE
+========================================================= -->
+<div id="settingsPage" class="page">
+    <h2>Authentication</h2>
+    <p style="color:#4CAF50; margin-top:10px;">
+        No API keys required.  
+        <br>
+        Your Cloudflare Worker now handles authentication securely ✓
+    </p>
+
+    <button id="saveKeysBtn" class="blueBtn">OK</button>
+    <button id="testKeysBtn" class="greenBtn">Check</button>
+</div>
+
+
+
+
+<!-- =========================================================
+     JS
+========================================================= -->
+<script src="main.js"></script>
+
+<script>
+/* PAGE SWITCH */
+document.getElementById("navStudio").onclick = () => switchPage("studioPage", "navStudio");
+document.getElementById("navHistory").onclick = () => switchPage("historyPage", "navHistory");
+document.getElementById("navSettings").onclick = () => switchPage("settingsPage", "navSettings");
+
+function switchPage(pageId, navId){
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(pageId).classList.add("active");
+
+    document.querySelectorAll(".nav-links a").forEach(a => a.classList.remove("active"));
+    document.getElementById(navId).classList.add("active");
+}
+</script>
+
+</body>
+</html>
