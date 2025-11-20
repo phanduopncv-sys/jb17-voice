@@ -1,12 +1,12 @@
 /* ============================================================
-   GLOBAL — Worker Endpoint
-   ============================================================ */
+   GLOBAL – Worker Endpoint
+============================================================ */
 
 const WORKER = "https://tts.jb17voice.top";
 
 /* ============================================================
    UI ELEMENTS
-   ============================================================ */
+============================================================ */
 
 const modelSelect = document.getElementById("modelSelect");
 const taskVoiceSelect = document.getElementById("taskVoiceSelect");
@@ -31,166 +31,212 @@ let history = JSON.parse(localStorage.getItem("tts_history") || "[]");
 
 /* ============================================================
    LOAD VOICES FROM WORKER
-   ============================================================ */
+============================================================ */
 
 async function loadVoices() {
     try {
-        taskVoiceSelect.innerHTML = `
-            <option value="EXAVITQu4vr4xnSDxMaL">Bella</option>
-            <option value="21m00Tcm4TlvDq8ikWAM">Rachel</option>
-            <option value="AZnzlk1XvdvUeBnXmlld">Domi</option>
-        `;
-    }
-    catch (e) {
-        console.error("Voice load error:", e);
+        const res = await fetch(WORKER + "/voices");
+        const data = await res.json();
+
+        taskVoiceSelect.innerHTML = "";
+
+        data.voices.forEach(v => {
+            const op = document.createElement("option");
+            op.value = v.id;
+            op.textContent = v.name;
+            taskVoiceSelect.appendChild(op);
+        });
+    } catch (e) {
+        console.error("Failed to load voices:", e);
     }
 }
+
 loadVoices();
 
 /* ============================================================
-   CALL WORKER FOR TTS
-   ============================================================ */
+   LOAD CREDITS (API CONNECTED)
+============================================================ */
 
-async function callTTS(text, voice, model) {
-    const payload = {
-        text,
-        voice_id: voice,
-        model_id: model,
-        speed: Number(speed.value),
-        stability: Number(stability.value),
-        similarity_boost: Number(similarity.value),
-        style: Number(style.value)
-    };
+async function checkAPI() {
+    try {
+        const res = await fetch(WORKER + "/credit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({})
+        });
 
-    const res = await fetch(`${WORKER}/tts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    });
+        const data = await res.json();
 
-    if (!res.ok) {
-        throw new Error("Worker error: " + res.status);
+        const statusBox = document.getElementById("apiStatusBox");
+
+        if (data.status === "ok") {
+            statusBox.textContent = `API Connected ✓ | Remaining: ${data.remaining}`;
+            statusBox.style.color = "#33FF66";
+        } else {
+            statusBox.textContent = "API Error";
+            statusBox.style.color = "red";
+        }
+    } catch (err) {
+        console.error(err);
     }
-
-    const buf = await res.arrayBuffer();
-    return buf;
 }
 
-/* ============================================================
-   PREVIEW VOICE THROUGH WORKER
-   ============================================================ */
+checkAPI();
 
-previewVoiceBtn.onclick = async () => {
-    let voice = customVoiceId.value.trim() || taskVoiceSelect.value;
-    let model = modelSelect.value;
-    
-    if (!voice) return alert("No voice selected");
+/* ============================================================
+   SLIDER UPDATE
+============================================================ */
+
+function updateSliderDisplay() {
+    speedVal.textContent = speed.value;
+    stabilityVal.textContent = stability.value;
+    similarityVal.textContent = similarity.value;
+    styleVal.textContent = style.value;
+}
+
+[speed, stability, similarity, style].forEach(sl => {
+    sl.addEventListener("input", updateSliderDisplay);
+});
+
+updateSliderDisplay();
+
+/* ============================================================
+   PREVIEW VOICE
+============================================================ */
+
+previewVoiceBtn.addEventListener("click", async () => {
+    const voiceId = customVoiceId.value.trim() || taskVoiceSelect.value;
+    const txt = "Hello, this is a preview.";
 
     try {
-        const blobData = await callTTS("This is a preview of your voice settings.", voice, model);
-        const audioBlob = new Blob([blobData], { type: "audio/mpeg" });
-        const audio = new Audio(URL.createObjectURL(audioBlob));
+        const res = await fetch(WORKER + "/tts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                text: txt,
+                voice_id: voiceId,
+                voice_settings: {
+                    speed: Number(speed.value),
+                    stability: Number(stability.value),
+                    similarity_boost: Number(similarity.value),
+                    style: Number(style.value)
+                }
+            })
+        });
+
+        if (!res.ok) {
+            alert("Preview error");
+            return;
+        }
+
+        const audioBlob = await res.blob();
+        const url = URL.createObjectURL(audioBlob);
+        const audio = new Audio(url);
         audio.play();
+
+    } catch (e) {
+        alert("Preview failed");
+        console.error(e);
     }
-    catch (err) {
-        alert("Preview error:\n" + err.message);
-    }
-};
+});
 
 /* ============================================================
    ADD TO QUEUE
-   ============================================================ */
+============================================================ */
 
-addToQueueBtn.onclick = async () => {
-    const text = inputText.value.trim();
-    if (!text) return alert("Text empty");
+addToQueueBtn.addEventListener("click", () => {
+    if (!inputText.value.trim()) return;
 
-    let voice = customVoiceId.value.trim() || taskVoiceSelect.value;
-    let model = modelSelect.value;
+    history.push({
+        text: inputText.value,
+        voice_id: customVoiceId.value.trim() || taskVoiceSelect.value
+    });
 
-    try {
-        const blobData = await callTTS(text, voice, model);
-        const blob = new Blob([blobData], { type: "audio/mpeg" });
-
-        const url = URL.createObjectURL(blob);
-        history.push({ text, voice, model, url });
-
-        localStorage.setItem("tts_history", JSON.stringify(history));
-        renderQueue();
-
-        alert("Done!");
-    }
-    catch (err) {
-        alert("Error:\n" + err.message);
-    }
-};
+    localStorage.setItem("tts_history", JSON.stringify(history));
+    renderQueue();
+});
 
 /* ============================================================
-   RENDER HISTORY
-   ============================================================ */
+   RENDER QUEUE
+============================================================ */
 
 function renderQueue() {
     queueContainer.innerHTML = "";
 
     history.forEach((item, i) => {
         const div = document.createElement("div");
-        div.className = "queueItem";
+        div.className = "queue-item";
+
         div.innerHTML = `
-            <p>${item.text}</p>
-            <button onclick="playAudio('${item.url}')">Play</button>
-            <button onclick="deleteQueue(${i})">Delete</button>
+            <span>${item.text}</span>
+            <button class="playBtn">Play</button>
+            <button class="deleteBtn">Delete</button>
         `;
+
+        div.querySelector(".playBtn").onclick = () => playQueueItem(i);
+        div.querySelector(".deleteBtn").onclick = () => deleteQueueItem(i);
+
         queueContainer.appendChild(div);
     });
 }
 
-window.playAudio = function (url) {
-    new Audio(url).play();
-};
-
-window.deleteQueue = function (i) {
-    history.splice(i, 1);
-    localStorage.setItem("tts_history", JSON.stringify(history));
-    renderQueue();
-};
-
 renderQueue();
 
 /* ============================================================
-   SLIDER UPDATE
-   ============================================================ */
-   /* ============================================================
-   CHECK WORKER API STATUS
+   PLAY QUEUE ITEM
 ============================================================ */
 
-async function checkAPI() {
-    const apiStatus = document.getElementById("apiStatus");
-    apiStatus.textContent = "Checking API…";
-
+async function playQueueItem(i) {
+    const item = history[i];
     try {
-        const res = await fetch(`${WORKER}/credit`, { method: "GET" });
-        if (!res.ok) throw new Error(res.status);
+        const res = await fetch(WORKER + "/tts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                text: item.text,
+                voice_id: item.voice_id,
+                voice_settings: {
+                    speed: Number(speed.value),
+                    stability: Number(stability.value),
+                    similarity_boost: Number(similarity.value),
+                    style: Number(style.value)
+                }
+            })
+        });
 
-        const json = await res.json();
-
-        if (json.remaining !== undefined) {
-            apiStatus.style.color = "#4CAF50";
-            apiStatus.textContent = `API Connected ✓  |  Remaining: ${json.remaining}`;
-        } else {
-            apiStatus.style.color = "#f33";
-            apiStatus.textContent = "Invalid response from Worker";
+        if (!res.ok) {
+            alert("Playback failed");
+            return;
         }
+
+        const audioBlob = await res.blob();
+        const url = URL.createObjectURL(audioBlob);
+        const audio = new Audio(url);
+        audio.play();
+
     } catch (err) {
-        apiStatus.style.color = "#f33";
-        apiStatus.textContent = `Failed to connect Worker (${err.message})`;
+        alert("Playback error");
+        console.error(err);
     }
 }
 
-// Auto check on load
-checkAPI();
+/* ============================================================
+   DELETE QUEUE ITEM
+============================================================ */
 
+function deleteQueueItem(i) {
+    history.splice(i, 1);
+    localStorage.setItem("tts_history", JSON.stringify(history));
+    renderQueue();
+}
 
-speed.oninput = () => speedVal.textContent = Number(speed.value).toFixed(2);
-stability.oninput = () => stabilityVal.textContent = Number(stability.value).toFixed(2);
-similarity.oninput = () => similarityVal.textContent = Number(similarity.value).toFixed(2);
-style.oninput = () => styleVal.textContent = Number(style.value).toFixed(2);
+/* ============================================================
+   CLEAR ALL HISTORY
+============================================================ */
+
+document.getElementById("clearHistoryBtn").onclick = () => {
+    history = [];
+    localStorage.setItem("tts_history", "[]");
+    renderQueue();
+};
+
