@@ -1,161 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>JB17 Voice Studio</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JB17 Voice Studio</title>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: #000;
+            border-bottom: 1px solid #222;
+            font-size: 18px;
+        }
+
+        header nav a {
+            color: #ccc;
+            margin-right: 20px;
+            text-decoration: none;
+        }
+
+        header nav a:hover {
+            color: #fff;
+        }
+
+        .container {
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        #voiceCard {
+            width: 30%;
+        }
+
+        #studioCard {
+            width: 70%;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            background: #000;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            background: #3498db;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .queue-item {
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #apiStatusBox {
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        #historySection {
+            margin-top: 40px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- =========================================================
-     NAVIGATION BAR
-========================================================= -->
-<div id="navbar">
-    <div class="logo">JB17 Voice Studio</div>
-    <div class="nav-links">
-        <a href="#" id="navStudio" class="active">Studio</a>
-        <a href="#" id="navHistory">History</a>
-        <a href="#" id="navSettings">Settings</a>
-    </div>
-</div>
+<header>
+    <div>JB17 Voice Studio</div>
+    <nav>
+        <a href="#studio">Studio</a>
+        <a href="#history">History</a>
+        <a href="#settings">Settings</a>
+    </nav>
+</header>
 
+<div class="container">
 
-<!-- =========================================================
-     STUDIO PAGE
-========================================================= -->
-<div id="studioPage" class="page active">
-
-    <div class="leftPanel">
-
+    <!-- ===================== VOICE SETTINGS ===================== -->
+    <div class="card" id="voiceCard">
         <h2>Voice Settings</h2>
 
-        <!-- MODEL -->
         <label>Model</label>
         <select id="modelSelect">
+            <option value="eleven_monolingual_v1">Eleven Monolingual v1</option>
             <option value="eleven_multilingual_v2">Eleven Multilingual v2</option>
-            <option value="eleven_turbo_v2">Eleven Turbo v2</option>
         </select>
 
-        <!-- SPEED -->
-        <div class="sliderBox">
-            <label>Speed <span id="speedVal">1.00</span></label>
-            <input type="range" id="speed" min="0" max="2" step="0.01" value="1.00">
-        </div>
+        <label>Speed</label>
+        <input type="range" id="speed" min="0.5" max="2.0" step="0.01" value="1.0">
+        <div id="speedVal">1.0</div>
 
-        <!-- STABILITY -->
-        <div class="sliderBox">
-            <label>Stability <span id="stabilityVal">1.00</span></label>
-            <input type="range" id="stability" min="0" max="2" step="0.01" value="1.00">
-        </div>
+        <label>Stability</label>
+        <input type="range" id="stability" min="0" max="1" step="0.01" value="1.0">
+        <div id="stabilityVal">1.0</div>
 
-        <!-- SIMILARITY -->
-        <div class="sliderBox">
-            <label>Similarity <span id="similarityVal">1.00</span></label>
-            <input type="range" id="similarity" min="0" max="2" step="0.01" value="1.00">
-        </div>
+        <label>Similarity</label>
+        <input type="range" id="similarity" min="0" max="1" step="0.01" value="1.0">
+        <div id="similarityVal">1.0</div>
 
-        <!-- STYLE -->
-        <div class="sliderBox">
-            <label>Style Exaggeration <span id="styleVal">0.00</span></label>
-            <input type="range" id="style" min="0" max="2" step="0.01" value="0">
-        </div>
-
+        <label>Style Exaggeration</label>
+        <input type="range" id="style" min="0" max="1" step="0.01" value="0">
+        <div id="styleVal">0</div>
     </div>
 
-
-    <!-- =======================================================
-         RIGHT PANEL — QUEUE + INPUT
-    ======================================================== -->
-    <div class="rightPanel">
-
+    <!-- ===================== STUDIO AREA ===================== -->
+    <div class="card" id="studioCard">
         <h2>Studio</h2>
 
-        <div class="topLine">
-            <span id="apiStatus">Checking API…</span>
-        </div>
+        <div id="apiStatusBox">Checking API...</div>
 
-        <!-- SELECT VOICE -->
         <label>Select Voice</label>
         <select id="taskVoiceSelect"></select>
 
-        <!-- PREVIEW BUTTON -->
-        <button id="previewVoiceBtn" class="greenBtn">🔊 Preview Voice</button>
-
-        <!-- CUSTOM ID -->
         <label>Or enter custom Voice ID:</label>
-        <input id="customVoiceId" type="text" placeholder="Enter ElevenLabs Voice ID…">
+        <input id="customVoiceId" placeholder="Enter ElevenLabs Voice ID...">
 
-        <!-- TEXT INPUT -->
+        <button id="previewVoiceBtn">Preview Voice</button>
+
         <label>Enter text</label>
-        <textarea id="inputText" rows="7" placeholder="Type or paste your text here…"></textarea>
+        <textarea id="inputText" rows="6" placeholder="Type or paste your text here..."></textarea>
 
-        <button id="addToQueueBtn" class="blueBtn" style="margin-top:10px;">+ Add to Queue</button>
+        <button id="addToQueueBtn">+ Add to Queue</button>
 
-        <h3 style="margin-top:20px;">Queue</h3>
-
-        <!-- QUEUE BOX -->
+        <h3>Queue</h3>
         <div id="queueContainer"></div>
-
     </div>
-
 </div>
 
-
-
-<!-- =========================================================
-     HISTORY PAGE
-========================================================= -->
-<div id="historyPage" class="page">
+<!-- ===================== HISTORY SECTION ===================== -->
+<div id="historySection">
     <h2>History</h2>
-
-    <div id="historyContainer"></div>
-
-    <button id="clearHistoryBtn" class="redBtn" style="margin-top:20px;">
-        Clear All History
-    </button>
+    <button id="clearHistoryBtn" style="background:#c0392b;">Clear All History</button>
 </div>
 
-
-
-<!-- =========================================================
-     SETTINGS PAGE
-========================================================= -->
-<div id="settingsPage" class="page">
-    <h2>Authentication</h2>
-    <p style="color:#4CAF50; margin-top:10px;">
-        No API keys required.  
-        <br>
-        Your Cloudflare Worker now handles authentication securely ✓
-    </p>
-
-    <button id="saveKeysBtn" class="blueBtn">OK</button>
-    <button id="testKeysBtn" class="greenBtn">Check</button>
-</div>
-
-
-
-
-<!-- =========================================================
-     JS
-========================================================= -->
 <script src="main.js"></script>
-
-<script>
-/* PAGE SWITCH */
-document.getElementById("navStudio").onclick = () => switchPage("studioPage", "navStudio");
-document.getElementById("navHistory").onclick = () => switchPage("historyPage", "navHistory");
-document.getElementById("navSettings").onclick = () => switchPage("settingsPage", "navSettings");
-
-function switchPage(pageId, navId){
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(pageId).classList.add("active");
-
-    document.querySelectorAll(".nav-links a").forEach(a => a.classList.remove("active"));
-    document.getElementById(navId).classList.add("active");
-}
-</script>
 
 </body>
 </html>
+
